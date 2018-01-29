@@ -1,7 +1,7 @@
-Fuse Integration Services (FIS) Use Case One - RestDSL wrapper around a datasource
+Random Fuse API's
 ====================================
 
-Demonstration of a RestDSL wrapper with Swagger Docs around a RDBS datasource using the Fuse Integration Services SpringBoot image.  The demo uses an in-memory Apache Derby relational database, which can easily be replaced with any relational database.
+This project demonstrates a bunch of service API's using both REST and SOAP.  The second use case showcases a RestDSL wrapper with Swagger Docs around a RDBS datasource using the Fuse Integration Services SpringBoot image.  The demo uses an in-memory Apache Derby relational database, which can easily be replaced with any relational database.
 
 ## Overview
 
