@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:tns="http://initialincident.example.camel.apache.org"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    targetNamespace="http://initialincident.example.camel.apache.org">
+ 
+    <!-- Type definitions for input- and output parameters for webservice -->
+    <wsdl:types>
+    <xs:schema targetNamespace="http://initialincident.example.camel.apache.org">
+            <xs:element name="inputInitialIncident">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element type="xs:string"  name="incidentDate"/>
+                        <xs:element type="xs:string"  name="givenName" minOccurs="1"/>
+                        <xs:element type="xs:string"  name="familyName" minOccurs="1"/>
+                        <xs:element type="xs:string"  name="details" minOccurs="1"/>
+                        <xs:element type="xs:string"  name="email"/>
+                        <xs:element type="xs:string"  name="phone"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="outputInitialIncident">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element type="xs:string" name="code"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:schema>
+    </wsdl:types>
+ 
+    <!-- Message definitions for input and output -->
+    <wsdl:message name="inputInitialIncident">
+        <wsdl:part name="parameters" element="tns:inputInitialIncident"/>
+    </wsdl:message>
+    <wsdl:message name="outputInitialIncident">
+        <wsdl:part name="parameters" element="tns:outputInitialIncident"/>
+    </wsdl:message>
+ 
+    <!-- Port (interface) definitions -->
+    <wsdl:portType name="InitialIncidentEndpoint">
+        <wsdl:operation name="InitialIncident">
+            <wsdl:input message="tns:inputInitialIncident"/>
+            <wsdl:output message="tns:outputInitialIncident"/>
+        </wsdl:operation>
+    </wsdl:portType>
+ 
+    <!-- Port bindings to transports and encoding - HTTP, document literal encoding is used -->
+    <wsdl:binding name="InitialIncidentBinding" type="tns:InitialIncidentEndpoint">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="InitialIncident">
+            <soap:operation
+                soapAction="http://initialincident.example.camel.apache.org/InitialIncident"
+                style="document"/>
+            <wsdl:input>
+                <soap:body parts="parameters" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body parts="parameters" use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+ 
+    <!-- Service definition -->
+    <wsdl:service name="InitialIncidentService">
+        <wsdl:port name="InitialIncidentPort" binding="tns:InitialIncidentBinding">
+            <soap:address location="http://initialincident.example.camel.apache.org"/>
+        </wsdl:port>
+    </wsdl:service>
+ 
+</wsdl:definitions>

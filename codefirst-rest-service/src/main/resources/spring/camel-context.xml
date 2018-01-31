@@ -31,10 +31,13 @@
 		id="initDatabase" init-method="create">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
+
 	<camelContext id="_camelContext1" xmlns="http://camel.apache.org/schema/spring"
 		xmlns:order="http://fabric8.com/examples/order/v7">
 		<dataFormats>
 			<json id="organization" library="Jackson" unmarshalTypeName="com.example.rest.Organization" />
+			<json id="randomIncidentData" library="Jackson"
+				unmarshalTypeName="com.example.pojo.RandomIncidentData" />
 		</dataFormats>
 		<onException useOriginalMessage="true">
 			<exception>java.lang.Exception</exception>
@@ -46,7 +49,7 @@
 			</setHeader>
 			<log message="[{&quot;error&quot;: &quot;${exception.message}&quot;}]" />
 			<setBody>
-				<simple>[{&quot;error&quot;: &quot;${exception.message}&quot;}]</simple>
+				<simple>[{"error": "${exception.message}"}]</simple>
 			</setBody>
 			<inOnly uri="activemq:outgoingErrorMessages" />
 		</onException>
@@ -82,8 +85,8 @@
 			<!-- this is a rest POST to accept any JSON payload -->
 			<post consumes="application/json" produces="application/json">
 				<description>Accepts any random JSON payload and writes it to a JMS queue</description>
-				<param name="body" type="body" description="The random JSON payload"
-					dataType="String" />
+				<param dataType="String" description="The random JSON payload"
+					name="body" type="body" />
 				<to uri="direct:postJson" />
 			</post>
 			<!-- this is a rest GET to find all organizations -->
@@ -91,6 +94,15 @@
 				<description>Find all organizations</description>
 				<to uri="direct:findAll" />
 			</get>
+		</rest>
+		<!-- defines the JSON service #2 -->
+		<rest consumes="application/json" path="/jsonServiceTwo"
+			produces="application/json">
+			<description>Accepts a RandomIncidentData JSON payload and converts it to XML</description>
+			<post type="com.example.pojo.RandomIncidentData" produces="application/json">
+				<description>Accepts a RandomIncidentData JSON payload and converts it to XML</description>
+				<to uri="direct:postJsonService2" />
+			</post>
 		</rest>
 		<route id="populateDB" startupOrder="1">
 			<from id="_from1" uri="timer://loadBankCSV?repeatCount=1" />
@@ -161,9 +173,19 @@
 			</setHeader>
 		</route>
 		<route id="postJson">
-			<from uri="direct:postJson" />
-			<convertBodyTo type="java.lang.String" />
-			<inOnly uri="activemq:incomingJsonPayloads" />
+			<from id="_from6" uri="direct:postJson" />
+			<convertBodyTo id="_convertBodyTo1" type="java.lang.String" />
+			<inOnly id="_inOnly1" uri="activemq:incomingJsonPayloads" />
+		</route>
+		<route id="postJsonService2">
+			<from uri="direct:postJsonService2" />
+			<marshal>
+				<jacksonxml unmarshalTypeName="com.example.pojo.RandomIncidentData" />
+			</marshal>
+			<log id="_log2" message="JSON converted to XML: [${body}]" />
+			<setBody>
+				<constant>[{"status": "OK"}]</constant>
+			</setBody>
 		</route>
 	</camelContext>
 </beans>

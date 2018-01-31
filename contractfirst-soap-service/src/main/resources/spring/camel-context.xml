@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2014-2017, Red Hat, Inc. and/or its affiliates, and individual 
+	contributors by the @authors tag. Licensed under the Apache License, Version 
+	2.0 (the "License"); you may not use this file except in compliance with 
+	the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License. -->
+<!-- Configures the Camel Context -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:cxf="http://camel.apache.org/schema/cxf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd        http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd    ">
+	<cxf:cxfEndpoint address="http://localhost:9393/cxf/incident"
+		id="incidentEndpoint" serviceClass="org.apache.camel.example.initialincident.InitialIncidentEndpoint"
+		wsdlURL="META-INF/wsdl/initial_incident.wsdl">
+		<cxf:properties>
+			<entry key="schema-validation-enabled" value="true" />
+		</cxf:properties>
+	</cxf:cxfEndpoint>
+	<cxf:cxfEndpoint address="http://localhost:9292/cxf/report"
+		id="reportIncidentClient" serviceClass="org.apache.camel.example.reportincident.IncidentService">
+		<cxf:inInterceptors>
+			<ref bean="gZipInInterceptor" />
+		</cxf:inInterceptors>
+		<cxf:outInterceptors>
+			<ref bean="gZipOutInterceptor" />
+		</cxf:outInterceptors>
+	</cxf:cxfEndpoint>
+	<bean class="org.apache.cxf.transport.common.gzip.GZIPInInterceptor"
+		id="gZipInInterceptor" />
+	<bean class="org.apache.cxf.transport.common.gzip.GZIPOutInterceptor"
+		id="gZipOutInterceptor" />
+	<bean
+		class="com.mycompany.camel.cxf.contract.first.spring.incident.InitialIncidentProcessor"
+		id="initialIncidentProcessor" />
+	<bean
+		class="com.mycompany.camel.cxf.contract.first.spring.incident.ReportIncidentProcessor"
+		id="reportIncidentProcessor" />
+
+	<camelContext id="camelContext-c1100b64-c8cb-4fa6-b382-5eea0e303c95"
+		xmlns="http://camel.apache.org/schema/spring">
+		<route id="cxf-listener">
+			<!-- route starts from the cxf webservice in POJO mode -->
+			<from id="incidentEndpointListener" uri="cxf:bean:incidentEndpoint" />
+			<process id="initialIncidentProcess" ref="initialIncidentProcessor" />
+<!-- 			<to id="_to1" uri="direct:post-soap-service-1" /> -->
+		</route>
+		<route id="post-soap-service-1">
+			<from id="_from1" uri="direct:post-soap-service-1" />
+			<process id="reportIncidentProcess" ref="reportIncidentProcessor" />
+			<to  uri="cxf:bean:reportIncidentClient?dataFormat=POJO" />
+			<log message="${body}"/>
+		</route>
+	</camelContext>
+</beans>
