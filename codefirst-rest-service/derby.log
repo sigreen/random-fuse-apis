@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Wed Jan 31 08:44:07 EST 2018:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.12.1.1 - (1704137): instance a816c00e-0161-4c75-d9f1-00002fe09e18 
+on database directory memory:/Users/sigreen/Documents/projects/mediacom/random-fuse-apis/codefirst-rest-service/orders with class loader java.net.URLClassLoader@6c0e5f7e 
+Loaded from file:/Users/sigreen/.m2/repository/org/apache/derby/derby/10.12.1.1/derby-10.12.1.1.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_51-b16
+user.dir=/Users/sigreen/Documents/projects/mediacom/random-fuse-apis/codefirst-rest-service
+os.name=Mac OS X
+os.arch=x86_64
+os.version=10.13.2
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
