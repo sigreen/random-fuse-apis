@@ -31,8 +31,8 @@
 		id="initDatabase" init-method="create">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
-
-	<camelContext id="_camelContext1" xmlns="http://camel.apache.org/schema/spring"
+	<bean class="com.example.pojo.RandomIncidentDataResponse" id="randomIncidentDataResponse" />
+	<camelContext id="codefirst-rest-service" xmlns="http://camel.apache.org/schema/spring"
 		xmlns:order="http://fabric8.com/examples/order/v7">
 		<dataFormats>
 			<json id="organization" library="Jackson" unmarshalTypeName="com.example.rest.Organization" />
@@ -64,33 +64,37 @@
 			<apiProperty key="api.contact.name" value="Simon Green" />
 		</restConfiguration>
 		<!-- defines the rest services using the context-path /organization -->
-		<rest consumes="application/json" path="/orgNameSearch" produces="application/json">
+		<rest consumes="application/json" id="rest-services" path="/orgNameSearch"
+			produces="application/json">
 			<description>Organization rest service</description>
 			<!-- this is a rest GET to view an organization by the given id -->
-			<get outType="com.example.rest.Organization" uri="/{id}">
+			<get id="rest-get-orgid" outType="com.example.rest.Organization"
+				uri="/{id}">
 				<description>Find organization by ord_id</description>
 				<to uri="direct:orgById" />
 			</get>
 			<!-- this is a rest GET to view paginated results using a partial organization 
 				name -->
-			<get outType="com.example.rest.Organization" uri="/{partialOrgName}/{pageNumber}/{pageSize}">
+			<get id="rest-get-partial-orgid" outType="com.example.rest.Organization"
+				uri="/{partialOrgName}/{pageNumber}/{pageSize}">
 				<description>Find organization by partial organization name and then return paginated results</description>
 				<to uri="direct:paginate" />
 			</get>
 			<!-- this is a rest PUT to create/update an Organization -->
-			<put type="com.example.rest.Organization">
+			<put id="rest-put-org" type="com.example.rest.Organization">
 				<description>Updates or create an organization</description>
 				<to uri="direct:putOrganization" />
 			</put>
 			<!-- this is a rest POST to accept any JSON payload -->
-			<post consumes="application/json" produces="application/json">
+			<post consumes="application/json" id="rest-post-json" produces="application/json">
 				<description>Accepts any random JSON payload and writes it to a JMS queue</description>
 				<param dataType="String" description="The random JSON payload"
 					name="body" type="body" />
 				<to uri="direct:postJson" />
 			</post>
 			<!-- this is a rest GET to find all organizations -->
-			<get outType="com.example.rest.Organization[]" uri="/findAll">
+			<get id="rest-get-findall" outType="com.example.rest.Organization[]"
+				uri="/findAll">
 				<description>Find all organizations</description>
 				<to uri="direct:findAll" />
 			</get>
@@ -99,7 +103,8 @@
 		<rest consumes="application/json" path="/jsonServiceTwo"
 			produces="application/json">
 			<description>Accepts a RandomIncidentData JSON payload and converts it to XML</description>
-			<post type="com.example.pojo.RandomIncidentData" produces="application/json">
+			<post id="rest-post-randomincidentdata" outType="com.example.pojo.RandomIncidentDataResponse"
+				type="com.example.pojo.RandomIncidentData">
 				<description>Accepts a RandomIncidentData JSON payload and converts it to XML</description>
 				<to uri="direct:postJsonService2" />
 			</post>
@@ -178,13 +183,16 @@
 			<inOnly id="_inOnly1" uri="activemq:incomingJsonPayloads" />
 		</route>
 		<route id="postJsonService2">
-			<from uri="direct:postJsonService2" />
-			<marshal>
+			<from id="_from7" uri="direct:postJsonService2" />
+			<setHeader headerName="incidentId">
+				<simple>${body.incidentId}</simple>
+			</setHeader>
+			<marshal id="_marshal1">
 				<jacksonxml unmarshalTypeName="com.example.pojo.RandomIncidentData" />
 			</marshal>
 			<log id="_log2" message="JSON converted to XML: [${body}]" />
-			<setBody>
-				<constant>[{"status": "OK"}]</constant>
+			<setBody id="_setBody2">
+				<simple>${bean:randomIncidentDataResponse?method=createResponse(${header.incidentId})}</simple>
 			</setBody>
 		</route>
 	</camelContext>

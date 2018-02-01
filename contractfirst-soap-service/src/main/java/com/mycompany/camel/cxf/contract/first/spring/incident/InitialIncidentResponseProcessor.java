@@ -24,7 +24,7 @@ import org.apache.camel.example.initialincident.OutputInitialIncident;
 /**
  * Processor for processing the report incident.
  */
-public class InitialIncidentProcessor implements Processor {
+public class InitialIncidentResponseProcessor implements Processor {
 
     @Override
     public void process(Exchange exchange) throws Exception {
@@ -34,9 +34,9 @@ public class InitialIncidentProcessor implements Processor {
         int id = (int) (Math.round(Math.random() * 1000) % 10);
         
         // set reply including the id
-        //OutputInitialIncident output = new OutputInitialIncident();
-        //output.setCode("OK;" + id);
-        //exchange.getOut().setBody(output);
+        OutputInitialIncident output = new OutputInitialIncident();
+        output.setCode("OK;" + id);
+        exchange.getOut().setBody(output);
         exchange.getOut().setHeader("origRequest", inputReport);
         exchange.getOut().setHeader("familyName", inputReport.getFamilyName());
         exchange.getOut().setHeader("givenName", inputReport.getGivenName());

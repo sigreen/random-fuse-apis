@@ -25,6 +25,8 @@
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element type="xs:string" name="code"/>
+                        <xs:element type="xs:string" name="soapServiceOneStatus"/>
+                        <xs:element type="xs:string" name="jsonServiceTwoStatus"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -66,7 +68,7 @@
     <!-- Service definition -->
     <wsdl:service name="InitialIncidentService">
         <wsdl:port name="InitialIncidentPort" binding="tns:InitialIncidentBinding">
-            <soap:address location="http://initialincident.example.camel.apache.org"/>
+            <soap:address location="http://0.0.0.0:9393/cxf/incident"/>
         </wsdl:port>
     </wsdl:service>
  

@@ -18,31 +18,21 @@ package com.mycompany.camel.cxf.contract.first.spring.incident;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
-import org.apache.camel.example.reportincident.InputReportIncident;
+import com.example.pojo.RandomIncidentData;;
 
 /**
  * Processor for processing the report incident.
  */
-public class ReportIncidentProcessor implements Processor {
+public class jsonService2Processor implements Processor {
 
     @Override
     public void process(Exchange exchange) throws Exception {
         // get the id of the input
-    		String familyName = (String) exchange.getIn().getHeader("familyName");
     		String givenName = (String) exchange.getIn().getHeader("givenName");
-    		String details = (String) exchange.getIn().getHeader("details");
-    		String reportId = String.valueOf(exchange.getIn().getHeader("reportId"));
-    		String incidentDate = String.valueOf(exchange.getIn().getHeader("incidentDate"));
-
+    		String date = (String) exchange.getIn().getHeader("incidentDate");
+    		String incidentId = String.valueOf(exchange.getIn().getHeader("reportId"));
     		
-    		InputReportIncident input = new InputReportIncident();
-    		input.setFamilyName(familyName);
-    		input.setGivenName(givenName);
-    		input.setDetails(details);
-    		input.setIncidentId(reportId);
-    		input.setIncidentDate(incidentDate);
-
-
+    		RandomIncidentData input = new RandomIncidentData(incidentId, date, givenName );
         exchange.getOut().setBody(input);
     }
 

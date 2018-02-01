@@ -138,6 +138,23 @@
 			<artifactId>activemq-pool</artifactId>
 		</dependency>
 
+
+		<!-- HawtIO -->
+		<dependency>
+			<groupId>io.hawt</groupId>
+			<artifactId>hawtio-springboot</artifactId>
+			<version>1.4.64</version>
+		</dependency>
+		<dependency>
+			<groupId>io.hawt</groupId>
+			<artifactId>hawtio-core</artifactId>
+			<version>1.4.64</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jolokia</groupId>
+			<artifactId>jolokia-core</artifactId>
+		</dependency>
+
 	</dependencies>
 	<repositories>
 		<repository>
