@@ -204,9 +204,6 @@
 						<configuration>
 							<sourceRoot>${basedir}/target/generated/src/main/java</sourceRoot>
 							<wsdlOptions>
-								<!-- <wsdlOption> -->
-								<!-- <wsdl>${basedir}/src/main/resources/META-INF/wsdl/initial_incident.wsdl</wsdl> -->
-								<!-- </wsdlOption> -->
 								<wsdlOption>
 									<wsdl>${basedir}/src/main/resources/META-INF/wsdl/initial_incident.wsdl</wsdl>
 									<extraargs>

@@ -1,81 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:cxf="http://camel.apache.org/schema/cxf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd        http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd    ">
-	<cxf:cxfEndpoint address="http://0.0.0.0:9393/cxf/incident"
-		id="incidentEndpoint" serviceClass="org.apache.camel.example.initialincident.InitialIncidentEndpoint"
-		wsdlURL="META-INF/wsdl/initial_incident.wsdl">
-		<cxf:properties>
-			<entry key="schema-validation-enabled" value="true" />
-		</cxf:properties>
-	</cxf:cxfEndpoint>
-	<cxf:cxfEndpoint address="http://localhost:9292/cxf/report"
-		id="reportIncidentClient" serviceClass="org.apache.camel.example.reportincident.IncidentServicePortType">
-		<cxf:inInterceptors>
-			<ref bean="gZipInInterceptor" />
-		</cxf:inInterceptors>
-		<cxf:outInterceptors>
-			<ref bean="gZipOutInterceptor" />
-		</cxf:outInterceptors>
-	</cxf:cxfEndpoint>
-	<bean class="org.apache.cxf.transport.common.gzip.GZIPInInterceptor"
-		id="gZipInInterceptor" />
-	<bean class="org.apache.cxf.transport.common.gzip.GZIPOutInterceptor"
-		id="gZipOutInterceptor" />
-	<bean
-		class="com.mycompany.camel.cxf.contract.first.spring.incident.InitialIncidentProcessor"
-		id="initialIncidentProcessor" />
-	<bean
-		class="com.mycompany.camel.cxf.contract.first.spring.incident.ReportIncidentProcessor"
-		id="reportIncidentProcessor" />
-	<bean
-		class="com.mycompany.camel.cxf.contract.first.spring.incident.jsonService2Processor"
-		id="jsonService2Processor" />
-	<bean id="compositeServiceAggregationStrategy"
-		class="com.mycompany.camel.cxf.contract.first.spring.incident.CompositeServiceAggregationStrategy" />
-
-	<camelContext id="camelContext-c1100b64-c8cb-4fa6-b382-5eea0e303c95"
-		xmlns="http://camel.apache.org/schema/spring">
-		<route id="cxf-listener">
-			<!-- route starts from the cxf webservice in POJO mode -->
-			<from id="incidentEndpointListener" uri="cxf:bean:incidentEndpoint" />
-			<process id="initialIncidentProcess" ref="initialIncidentProcessor" />
-			<multicast parallelProcessing="true" streaming="true"
-				strategyRef="compositeServiceAggregationStrategy">
-				<to uri="direct:post-soap-service-1" />
-				<to uri="direct:post-json-service-2" />
-			</multicast>
-		</route>
-		<route id="post-soap-service-1">
-			<from id="_from1" uri="direct:post-soap-service-1" />
-			<process id="reportIncidentProcess" ref="reportIncidentProcessor" />
-			<setHeader headerName="operationNamespace" id="_setHeader1">
-				<constant>http://incident.spring.first.code.cxf.camel.mycompany.com/</constant>
-			</setHeader>
-			<setHeader headerName="operationName" id="_setHeader2">
-				<constant>reportIncident</constant>
-			</setHeader>
-			<to id="_to1" uri="cxf:bean:reportIncidentClient" />
-			<setBody id="_setBody1">
-				<simple>${body[0]}</simple>
-			</setBody>
-		</route>
-		<route id="post-json-service-2">
-			<from id="_from2" uri="direct:post-json-service-2" />
-			<setHeader headerName="Exchange.HTTP_METHOD" id="_setHeader3">
-				<constant>POST</constant>
-			</setHeader>
-			<process id="jsonService2Processor" ref="jsonService2Processor" />
-			<marshal id="_marshal2">
-				<json library="Jackson" prettyPrint="true"
-					unmarshalTypeName="com.example.pojo.RandomIncidentData" />
-			</marshal>
-			<to id="_to2" uri="http4://localhost:8080/api/jsonServiceTwo" />
-			<unmarshal>
-				<json library="Jackson" prettyPrint="true"
-					unmarshalTypeName="com.example.pojo.RandomIncidentDataResponse" />
-			</unmarshal>
-		</route>
-	</camelContext>
+    xmlns:cxf="http://camel.apache.org/schema/cxf"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd        http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd    ">
+    <cxf:cxfEndpoint address="http://0.0.0.0:9393/cxf/incident"
+        id="incidentEndpoint"
+        serviceClass="org.apache.camel.example.initialincident.InitialIncidentEndpoint" wsdlURL="META-INF/wsdl/initial_incident.wsdl">
+        <cxf:properties>
+            <entry key="schema-validation-enabled" value="true"/>
+        </cxf:properties>
+    </cxf:cxfEndpoint>
+    <cxf:cxfEndpoint address="http://localhost:9292/cxf/report"
+        id="reportIncidentClient" serviceClass="org.apache.camel.example.reportincident.IncidentServicePortType">
+        <cxf:inInterceptors>
+            <ref bean="gZipInInterceptor"/>
+        </cxf:inInterceptors>
+        <cxf:outInterceptors>
+            <ref bean="gZipOutInterceptor"/>
+        </cxf:outInterceptors>
+    </cxf:cxfEndpoint>
+    <bean class="org.apache.cxf.transport.common.gzip.GZIPInInterceptor" id="gZipInInterceptor"/>
+    <bean
+        class="org.apache.cxf.transport.common.gzip.GZIPOutInterceptor" id="gZipOutInterceptor"/>
+    <bean
+        class="com.mycompany.camel.cxf.contract.first.spring.incident.InitialIncidentProcessor" id="initialIncidentProcessor"/>
+    <bean
+        class="com.mycompany.camel.cxf.contract.first.spring.incident.ReportIncidentProcessor" id="reportIncidentProcessor"/>
+    <bean
+        class="com.mycompany.camel.cxf.contract.first.spring.incident.jsonService2Processor" id="jsonService2Processor"/>
+    <bean
+        class="com.mycompany.camel.cxf.contract.first.spring.incident.CompositeServiceAggregationStrategy" id="compositeServiceAggregationStrategy"/>
+    <camelContext id="camelContext-c1100b64-c8cb-4fa6-b382-5eea0e303c95" xmlns="http://camel.apache.org/schema/spring">
+        <route id="cxf-listener">
+            <!-- route starts from the cxf webservice in POJO mode -->
+            <from id="incidentEndpointListener" uri="cxf:bean:incidentEndpoint"/>
+            <process id="initialIncidentProcess" ref="initialIncidentProcessor"/>
+            <multicast id="_multicast1" parallelProcessing="true"
+                strategyRef="compositeServiceAggregationStrategy" streaming="true">
+                <to id="_to3" uri="direct:post-soap-service-1"/>
+                <to id="_to4" uri="direct:post-json-service-2"/>
+            </multicast>
+        </route>
+        <route id="post-soap-service-1">
+            <from id="_from1" uri="direct:post-soap-service-1"/>
+            <process id="reportIncidentProcess" ref="reportIncidentProcessor"/>
+            <setHeader headerName="operationNamespace" id="_setHeader1">
+                <constant>http://incident.spring.first.code.cxf.camel.mycompany.com/</constant>
+            </setHeader>
+            <setHeader headerName="operationName" id="_setHeader2">
+                <constant>reportIncident</constant>
+            </setHeader>
+            <to id="_to1" uri="cxf:bean:reportIncidentClient"/>
+            <setBody id="_setBody1">
+                <simple>${body[0]}</simple>
+            </setBody>
+        </route>
+        <route id="post-json-service-2">
+            <from id="_from2" uri="direct:post-json-service-2"/>
+            <setHeader headerName="Exchange.HTTP_METHOD" id="_setHeader3">
+                <constant>POST</constant>
+            </setHeader>
+            <process id="jsonService2Processor" ref="jsonService2Processor"/>
+            <marshal id="_marshal2">
+                <json library="Jackson" prettyPrint="true" unmarshalTypeName="com.example.pojo.RandomIncidentData"/>
+            </marshal>
+            <to id="_to2" uri="http4://localhost:8080/api/jsonServiceTwo"/>
+            <unmarshal id="_unmarshal1">
+                <json library="Jackson" prettyPrint="true" unmarshalTypeName="com.example.pojo.RandomIncidentDataResponse"/>
+            </unmarshal>
+        </route>
+    </camelContext>
 </beans>
