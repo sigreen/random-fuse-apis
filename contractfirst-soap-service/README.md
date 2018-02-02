@@ -11,26 +11,26 @@ The steps demonstrated by this project can be detailed as follows:
 
 ### 1.1 Exposed Endpoint
 
-1.1.1  Service takes six input parameters
-1.1.2 Validate input SOAP using XSD or WSDL
-1.1.3 Extract three elements from input
-1.1.4 Create SOAP payload from extracted elements and send it out to SOAP Service 1
-1.1.5 If above call returns error return a well formed error back to caller
-1.1.6 Create JSON payload from remaining three elements and sent it out to JSON Service 2
-1.1.7 Parse above calls JSON output and Transform it to SOAP
-1.1.8 Combine above with SOAP Service 1 call response and create final SOAP output then send it out
+1. Service takes six input parameters
+2. Validate input SOAP using XSD or WSDL
+3. Extract three elements from input
+4. Create SOAP payload from extracted elements and send it out to SOAP Service 1
+5. If above call returns error return a well formed error back to caller
+6. Create JSON payload from remaining three elements and sent it out to JSON Service 2
+7. Parse above calls JSON output and Transform it to SOAP
+8. Combine above with SOAP Service 1 call response and create final SOAP output then send it out
 
 ### 1.2 SOAP Service 1
 
-1.2.1 Accept SOAP input payload and validate it
-1.2.2 Transform it to JSON and log it
-1.2.3 Return a success SOAP response
+1. Accept SOAP input payload and validate it
+2. Transform it to JSON and log it
+3. Return a success SOAP response
 
 ### 1.3 JSON Service 2
 
-1.3.1 Accept JSON input payload and validate it
-1.3.2 Transform it to XML and log it
-1.3.3 Return a success JSON response
+1. Accept JSON input payload and validate it
+2. Transform it to XML and log it
+3. Return a success JSON response
 
 
 ## Prerequisites

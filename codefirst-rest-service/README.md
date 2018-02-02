@@ -1,11 +1,13 @@
-Random Fuse API's
+Code First REST API Service
 ====================================
 
-This project demonstrates a bunch of service API's using both REST and SOAP.  The second use case showcases a RestDSL wrapper with Swagger Docs around a RDBS datasource using the Fuse Integration Services SpringBoot image.  The demo uses an in-memory Apache Derby relational database, which can easily be replaced with any relational database.
+This project demonstrates a RestDSL wrapper with Swagger Docs around a RDBS datasource using the Fuse Integration Services SpringBoot image.  The demo uses an in-memory Apache Derby relational database, which can easily be replaced with any relational database.
 
 ## Overview
 
-This project demonstrates a Restful wrapper around a relational database.  Using an in-memory Apache Derby relational database as the datasource, the usecase can easily be updated to connect to any relational database (see the commented bean hooks for Oracle in the camel-context.xml).  Additionally, the REST API is documented using Swagger.  The project makes use of camel-servlet component listening on port 8080 and configured using Spring Boot.
+This project demonstrates a Restful wrapper around a relational database.  Using an in-memory Apache Derby relational database as the datasource, the usecase can easily be updated to connect to any relational database (see the commented bean hooks for Oracle in the camel-context.xml).  Additionally, the REST API is documented using Swagger.  The project makes use of camel-servlet component listening on port 8080 and configured using Spring Boot.  The flow is illustrated by the following diagram:
+
+![](images/restAPI.png "REST API Flow")
 
 ## Prerequisites
 
@@ -35,7 +37,7 @@ The standalone method takes advantage of the [Camel Spring Boot Plugin](http://c
 Execute the following command from the root project directory:
 
 ```
-mvn -s support/sample-settings.xml spring-boot:run -Dspring.profiles.active=dev
+mvn -s support/sample-settings.xml spring-boot:run
 ```
 
 Once the spring boot service has started, you can test the REST API by executing the following command
